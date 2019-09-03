@@ -1,0 +1,61 @@
+{
+  "name": "@omneo/shapes-react-helpers",
+  "version": "0.0.2",
+  "license": "MIT",
+  "author": "Omneo <dev@omneo.io>",
+  "dependencies": {
+    "@omneo/shapes-react-helpers": "^0.0.2",
+    "@omneo/shapes-sdk": "^0.1.5",
+    "jwt-decode": "^2.2.0",
+    "local-storage-fallback": "^4.1.1",
+    "react": "^16.3.0",
+    "react-dom": "^16.3.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-transform-modules-commonjs": "^7.5.0",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.2.0",
+    "webpack": "^4.39.1",
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-server": "^3.2.1"
+  },
+  "scripts": {
+    "start": "webpack-dev-server --open --mode development --config webpack.config.dev",
+    "build": "webpack --mode production --progress --colors"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "keywords": [
+    "react",
+    "provider",
+    "context",
+    "shape",
+    "shapes",
+    "omneo"
+  ],
+  "readmeFilename": "README.md",
+  "homepage": "http://shapes-sdk.omneo.io",
+  "main": "./src/ShapesContext/index.js",
+  "webpack": "./src/ShapesContext/index.js",
+  "files": [
+    "src/ShapesContext"
+  ]
+}

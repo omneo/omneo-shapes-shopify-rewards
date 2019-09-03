@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Shopify Omneo Rewards</title>
+</head>
+<body>
+  <div class="order-summary__sections">
+    <div class="order-summary__section"><p>Product list section</p></div>
+  </div>
+  <script>
+    ShapesShopifyCheckout.init({
+      customerId: 2,
+      customerSignature: "bf76d15fedaf49cf49cd9e56fb224944c83e66d8ef1c05b16c002681ff99a5de",
+      pluginUrl: "https://api.mjbale-staging.getomneo.com/shopify",
+      idUrl: "https://api.mjbale-staging.getomneo.com/id",
+      lineItemId: 0,
+      rewardVariantId: 1,
+      subTotal: 500,
+      rewardApplied: 6,
+      title: 'Loyalty rewards available:',
+      loadingMessage: "Just a moment as we set up your account",
+      errorMessage: "There was an issue getting your rewards. Please try again shortly or get in touch with customer support.",
+      supportEmail: false,
+      hideIfInactive: false,
+      autoExpandSummary: false
+    })
+  </script>
+</body>
+</html>
