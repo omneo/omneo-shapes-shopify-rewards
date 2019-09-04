@@ -1,5 +1,5 @@
 # Shopify Checkout Reward Component
-A small package for checking and applying an Omneo reward balance to Shopify Checkout. This component uses `Preact` for dom manipulation and `Unfetch` to polyfill modern `fetch` functionality.
+A small package for checking and applying an Omneo reward balance to Shopify Checkout. This component uses `React` for dom manipulation and `Unfetch` to polyfill modern `fetch` functionality.
 
 ## Shopify install
 Installing this component includes a number of quick steps:
@@ -12,9 +12,16 @@ This is used by the checkout script and component to apply dynamic rewards to a 
 ### Create component snippet
 Create a new snippet in your Shopify theme called `omneo-checkout-rewards.liquid` and copy the following code into the start of the file. Add your Omneo url, token, profile id and the Shopify Variant ID of your Loyalty Reward product. Please ensure the `rewardVariantId` is an integer.
 ```
-{% assign omneoUrl = 'https://plugin-shopify.{environment}.omneoapp.com/api/v1' %}
 {% assign rewardVariantId = 0 %} 
 {% assign ignoreGiftCards = true %} 
+{% assign omneoTenant = "mjbale-staging" %} 
+{% assign omneoToken = false %} 
+{% assign title = "Loyalty rewards available:" %}
+{% assign supportEmail = false %}
+{% assign hideIfInactive = true %}
+{% assign autoExpandSummary = true %}
+{% assign loadingMessage = "Just a moment as we set up your account" %}
+{% assign errorMessage = "There was an issue getting your rewards. Please try again or contact customer support." %}
 ```
 Once the variables are added, add the following code to complete the snippet:
 ```
@@ -39,32 +46,27 @@ Once the variables are added, add the following code to complete the snippet:
         {% endif %}
     {% endfor %}
 
-    {% assign omneoToken = false %}
-    {% assign shopifyProfileId = customer.id %}
-
-    {% if customer.metafields.omneo != blank %}
-        {% assign omneoToken = customer.metafields.omneo.token | append: "'" | prepend: "'" %}
-    {% endif %}
-
     {% if subtotalFromAppliedReward %}
         {% assign subtotalCalculated = subtotalFromAppliedReward %}
     {% endif %}
 
-    <script type="text/javascript" src="//cdn.omneo.io/omneo-shopify-checkout-rewards.js"></script>
+    <script type="text/javascript" src="//cdn.omneo.io/shapes-shopify-checkout.js"></script>
     <script>
-      OmneoShopifyCheckoutRewards.build({
-          omneoUrl: '{{omneoUrl}}',
-          omneoToken: {{omneoToken}},
-          shopifyProfileId: {{shopifyProfileId}},
+      ShapesShopifyCheckout.init({
+          customerId: "{{ customer.id }}",
+          customerSignature: "{{ customer.id | hmac_sha1: product.metafields.omneo.id_secret }}",
+          idUrl: "https://api.{{omneoTenant}}.getomneo.com/id",
+          pluginUrl: "https://api.{{omneoTenant}}.getomneo.com/shopify",
+          token: "{{omneoToken}}", 
           rewardVariantId: {{rewardVariantId}},
           subTotal: {{subtotalCalculated}},
           rewardApplied: {{rewardApplied}},
-          title: 'Loyalty rewards available:',
-          loadingMessage: "Just a moment as we set up your account",
-          errorMessage: "There was an issue getting your rewards. Please try again shortly or get in touch with customer support.",
-          supportEmail: false,
-          hideIfInactive: false,
-          autoExpandSummary: true
+          title: {{title}},
+          loadingMessage: {{subtotalCalculated}},
+          errorMessage: {{errorMessage}},
+          supportEmail: {{supportEmail}},
+          hideIfInactive: {{hideIfInactive}},
+          autoExpandSummary: {{autoExpandSummary}}
       });
     </script>
 {% endif %}
