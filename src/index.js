@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 
 const init = config => {
-    (()=>{
+    const run = () => {
         const summarySections = document.getElementsByClassName('order-summary__sections');
         if(!summarySections[0]){return;}
         const el = document.createElement("div");
@@ -14,7 +14,9 @@ const init = config => {
         summarySections[0].insertBefore(el, summarySections[0].children[1]);
 
         ReactDOM.render(<App config={config}/>, el);
-    })();
+    }
+    
+    document.addEventListener("DOMContentLoaded", run);
 }
 
 

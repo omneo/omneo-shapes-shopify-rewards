@@ -68,6 +68,7 @@ const getClient = (config) => {
 
         getToken(config).then(validToken=>{
             if(!validToken){
+                console.error('No valid shapes token'); 
                 storage.removeItem('shapes:omneo:shapestoken');
                 return resolve(false)
             }else{

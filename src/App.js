@@ -4,13 +4,13 @@ import {getClient} from './helpers';
 import RewardPlaceholder from './components/RewardPlaceholder';
 import RewardField from './components/RewardField';
 
-export default class extends React.PureComponent {
+export default class extends React.PureComponent { 
 	constructor(props) {
 		super(props);
 		this.state = {};
 	}
 
-	expandContainer(){
+	expandContainer(){ 
 		const {autoExpandSummary} = this.props.config;
 		if(!autoExpandSummary){return}
 
@@ -31,6 +31,8 @@ export default class extends React.PureComponent {
 			if(client && client.ready){
 				return this.initComponent(client);
 			}
+
+			console.error('Could not create shapes client');
 
 			this.setState({
 				error: true

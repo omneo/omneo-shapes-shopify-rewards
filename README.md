@@ -54,17 +54,17 @@ Once the variables are added, add the following code to complete the snippet:
     <script>
       ShapesShopifyCheckout.init({
           customerId: "{{ customer.id }}",
-          customerSignature: "{{ customer.id | hmac_sha1: product.metafields.omneo.id_secret }}",
+          customerSignature: "{{ customer.id | hmac_sha256: shop.metafields.omneo.id_secret }}",
           idUrl: "https://api.{{omneoTenant}}.getomneo.com/id",
           pluginUrl: "https://api.{{omneoTenant}}.getomneo.com/shopify",
-          token: "{{omneoToken}}", 
+          token: {% if omneoToken != false %}"{{omneoToken}}"{% else %}false{% endif %}, 
           rewardVariantId: {{rewardVariantId}},
           subTotal: {{subtotalCalculated}},
           rewardApplied: {{rewardApplied}},
-          title: {{title}},
-          loadingMessage: {{subtotalCalculated}},
-          errorMessage: {{errorMessage}},
-          supportEmail: {{supportEmail}},
+          title: "{{title}}",
+          loadingMessage: "{{loadingMessage}}",
+          errorMessage: "{{errorMessage}}",
+          supportEmail: {% if supportEmail != false %}"{{supportEmail}}"{% else %}false{% endif %},
           hideIfInactive: {{hideIfInactive}},
           autoExpandSummary: {{autoExpandSummary}}
       });
