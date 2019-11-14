@@ -15,7 +15,7 @@ const validateToken = token => {
 const getToken = (config) => {
     const {token, customerSignature, customerId, pluginUrl} = config;
     return new Promise(resolve=>{
-        const cachedToken = storage.getItem('shapes:omneo:shapestoken');
+        const cachedToken = storage.getItem('shapes:omneo:shapestoken:'+customerId);
         if(cachedToken){
             if(validateToken(cachedToken)){
                 return resolve(cachedToken);
@@ -58,7 +58,7 @@ const getToken = (config) => {
 }
 
 const getClient = (config) => {
-    const {idUrl} = config; 
+    const {idUrl, customerId} = config; 
     return new Promise(resolve => {
         try{
             if(window.ShapesSDKClient.ready){
@@ -69,10 +69,10 @@ const getClient = (config) => {
         getToken(config).then(validToken=>{
             if(!validToken){
                 console.error('No valid shapes token'); 
-                storage.removeItem('shapes:omneo:shapestoken');
+                storage.removeItem('shapes:omneo:shapestoken:'+customerId);
                 return resolve(false)
             }else{
-                storage.setItem('shapes:omneo:shapestoken', validToken);
+                storage.setItem('shapes:omneo:shapestoken:'+customerId, validToken);
             }
 
             try{

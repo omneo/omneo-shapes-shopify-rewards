@@ -50,6 +50,19 @@ export default class extends React.PureComponent {
 		this.expandContainer();
 	}
 
+	toggleBlock(show){
+		const {element} = this.props;
+		let baseStyle = "border-bottom:1px solid rgba(175,175,175,0.34)";
+
+		if(show && element.style.display === "none"){
+			element.style.cssText = baseStyle;
+		}
+
+		if(!show && element.style.display !== "none"){
+			element.style.cssText = "display:none"
+		}
+	}
+
 	render() {
 		const {init, data, error} = this.state;
 		const {
@@ -57,7 +70,7 @@ export default class extends React.PureComponent {
 			supportEmail,
 			title = 'Loyalty rewards available:',
 			errorMessage = "There was an issue retrieving your reward balance. Please try again shortly or get in touch with customer support.", 
-			loadingMessage = "Just a moment as we set up your account"
+			loadingMessage = "Just a moment as we set up your account",
 		} = this.props.config;
 		
 		if(!init){
@@ -69,6 +82,7 @@ export default class extends React.PureComponent {
 					errorMessage={errorMessage}
 					supportEmail={supportEmail}
 					hideIfInactive={hideIfInactive}
+					toggleBlock={this.toggleBlock.bind(this)}
 				/>
 			)
 		}
@@ -82,6 +96,7 @@ export default class extends React.PureComponent {
 					errorMessage={errorMessage}
 					supportEmail={supportEmail}
 					hideIfInactive={hideIfInactive}
+					toggleBlock={this.toggleBlock.bind(this)}
 				/>
 			)
 		}
@@ -90,6 +105,7 @@ export default class extends React.PureComponent {
 				maxBalance={data.combined_balance_dollars || 0}
 				config={this.props.config}
 				title={title}
+				toggleBlock={this.toggleBlock.bind(this)}
 			/>
 		)
 	}

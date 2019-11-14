@@ -10,10 +10,10 @@ const init = config => {
         const el = document.createElement("div");
         el.id = 'omneo-shopify-checkout-rewards';
         el.className = "order-summary__section";
-        el.style = "border-bottom: 1px solid rgba(175,175,175,0.34)";
+        el.style.cssText = "border-bottom: 1px solid rgba(175,175,175,0.34)";
         summarySections[0].insertBefore(el, summarySections[0].children[1]);
 
-        ReactDOM.render(<App config={config}/>, el);
+        ReactDOM.render(<App config={config} element={el}/>, el);
     }
     
     document.addEventListener("DOMContentLoaded", run);

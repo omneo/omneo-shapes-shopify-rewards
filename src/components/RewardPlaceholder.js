@@ -2,9 +2,14 @@ import React from 'react';
 import Spinner from './Spinner';
 export default class extends React.PureComponent {
     render() {
-        const {loadingMessage, errorMessage, supportEmail, hideIfInactive, title, error} = this.props;
+        const {loadingMessage, errorMessage, supportEmail, hideIfInactive, title, error, toggleBlock} = this.props;
         if(error){
-            if(hideIfInactive){return null}
+            if(hideIfInactive){
+                toggleBlock(false)
+                return null
+            }
+
+            toggleBlock(true)
 
             return(
                 <div className="fieldset">

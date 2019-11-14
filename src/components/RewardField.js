@@ -1,4 +1,5 @@
 import React from 'react';
+import {fetch as fetchPolyfill} from 'whatwg-fetch'
 export default class extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -75,7 +76,7 @@ export default class extends React.PureComponent {
             loading: true
         });
 
-        fetch('/cart/add.js',{
+        fetchPolyfill('/cart/add.js',{
             method:"POST",
             credentials: 'include',
             headers: {
@@ -100,7 +101,7 @@ export default class extends React.PureComponent {
         this.setState({
             loading: true
         });
-        fetch('/cart/update.js',{
+        fetchPolyfill('/cart/update.js',{
             method:"POST",
             credentials: 'include',
             headers: {
@@ -149,14 +150,16 @@ export default class extends React.PureComponent {
     }
 
     render() {
-        const {maxBalance, config, title} = this.props;
+        const {maxBalance, config, title, toggleBlock} = this.props;
         const {redeem, loading} = this.state;
         const buttonDisabled = loading || redeem === '' || redeem == 0 || maxBalance <= 0;
 
         if(config.hideIfInactive && maxBalance <= 0){
+            toggleBlock(false)
             return null
         }
 
+        toggleBlock(true)
         const isRewardApplied = this.isRewardApplied();
 
         return (
