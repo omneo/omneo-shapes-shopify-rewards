@@ -112,7 +112,7 @@ def get_valid_cart_amount(line_items)
 
   if line_items.kind_of?(Array)
     line_items.each do |line_item|
-      if IGNORE_GIFT_CARDS and line_item.variant.product.gift_card?
+      if IGNORE_GIFT_CARDS and (line_item.variant.product.product_type == "Gift Card" or line_item.variant.product.gift_card?)
         cart_amount = cart_amount - Integer(line_item.line_price.cents.round.to_s)
       end
     end
@@ -159,7 +159,7 @@ def apply_loyalty_rewards(line_items)
 
   if line_items.kind_of?(Array)
     line_items.each do |line_item|
-      next unless !IGNORE_GIFT_CARDS or !line_item.variant.product.gift_card?
+      next unless !IGNORE_GIFT_CARDS or !(line_item.variant.product.product_type == "Gift Card" or line_item.variant.product.gift_card?)
       price = Integer(line_item.line_price.cents.round.to_s)
       if price > 0
         proportion =  price / total_reward_elegible_price
