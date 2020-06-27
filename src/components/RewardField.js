@@ -16,19 +16,25 @@ export default class extends React.PureComponent {
     }
 
     checkCartCanUseReward(){
-        // const isRewardApplied = this.isRewardApplied();
-        // if(!isRewardApplied){return}
+        const isRewardApplied = this.isRewardApplied();
+        if(!isRewardApplied){return}
 
-        // const max = this.getMax();
-        // const {redeem} = this.state;
+        const max = this.getMax();
+        const {redeem} = this.state; 
 
-        // if(max <= 0 || parseFloat(redeem) > parseFloat(max)){
-        //     this.removeRewards();
-        // }
+        if(max <= 0 || parseFloat(redeem) > parseFloat(max)){
+            this.removeRewards();
+        }
     }
 
     componentDidMount(){
         this.checkCartCanUseReward();
+    }
+
+    componentDidUpdate(prevProps){
+        if(prevProps.maxBalance !== this.props.maxBalance){
+            this.checkCartCanUseReward()
+        }
     }
 
     getMax(){

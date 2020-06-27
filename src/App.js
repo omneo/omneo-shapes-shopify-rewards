@@ -26,10 +26,20 @@ export default class extends React.PureComponent {
 		this.unmounted = true;
 	}
 
+	componentDidMount(){
+		this.initClient();
+		this.expandContainer();
+		setInterval(this.refreshBalance, 1000 * 60)
+	}
+
 	initClient(){
 		getClient(this.props.config).then(client=>{
 			if(client && client.ready){
-				return this.initComponent(client);
+				this.client = client;
+				this.client.on('shapes.balances.ready', balances => this.setState(balances))
+				this.client.on('shapes.balances.update', balances => this.setState(balances))
+				this.client.hydrate('balances');
+				return
 			}
 
 			console.error('Could not create shapes client');
@@ -40,14 +50,12 @@ export default class extends React.PureComponent {
 		});
 	}
 
-	initComponent(client){
-		client.on('shapes.balances.ready', balances => this.setState(balances))
-		client.hydrate('balances');
-	}
-
-	componentDidMount(){
-		this.initClient();
-		this.expandContainer();
+	refreshBalance(){
+		if(this.client){
+			this.client.get('balances', false, true).catch(e=>{
+				console.log(e);
+			})
+		}
 	}
 
 	toggleBlock(show){
