@@ -5,7 +5,7 @@ A small package for checking and applying an Omneo reward balance to Shopify Che
 Installing this component includes a number of quick steps:
 
 ### Add Loyalty Reward product
-Add a new product to Shopify with the description of `Loyalty Reward` or eqivalent and copy the variant ID. [Finding your Variant ID](https://help.shopify.com/themes/customization/products/variants/find-variant-id)
+Add a new product (Not a physical product) to Shopify with the description of `Loyalty Reward` or eqivalent and copy the variant ID. [Finding your Variant ID](https://help.shopify.com/themes/customization/products/variants/find-variant-id)
 
 This is used by the checkout script and component to apply dynamic rewards to a transaction.
 
