@@ -10,7 +10,7 @@ export default class extends React.PureComponent {
     componentDidMount(){
       this.mounted = true;
         setTimeout(()=>{
-          if(this.isMounted){
+          if(this.mounted){
             this.setState({init:true})
           }
         },16);
