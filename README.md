@@ -12,10 +12,10 @@ This is used by the checkout script and component to apply dynamic rewards to a 
 ### Create component snippet
 Create a new snippet in your Shopify theme called `omneo-checkout-rewards.liquid` and copy the following code into the start of the file. Add your Omneo url, token, profile id and the Shopify Variant ID of your Loyalty Reward product. Please ensure the `rewardVariantId` is an integer.
 ```
-{% assign rewardVariantId = 0 %} 
-{% assign ignoreGiftCards = true %} 
-{% assign omneoTenant = "mjbale-staging" %} 
-{% assign omneoToken = false %} 
+{% assign rewardVariantId = 0 %}
+{% assign ignoreGiftCards = true %}
+{% assign omneoTenant = "mjbale-staging" %}
+{% assign omneoToken = false %}
 {% assign title = "Loyalty rewards available:" %}
 {% assign supportEmail = false %}
 {% assign hideIfInactive = true %}
@@ -57,7 +57,7 @@ Once the variables are added, add the following code to complete the snippet:
           customerSignature: "{{ customer.id | hmac_sha256: shop.metafields.omneo.id_secret }}",
           idUrl: "https://api.{{omneoTenant}}.getomneo.com/id",
           pluginUrl: "https://api.{{omneoTenant}}.getomneo.com/shopify",
-          token: {% if omneoToken != false %}"{{omneoToken}}"{% else %}false{% endif %}, 
+          token: {% if omneoToken != false %}"{{omneoToken}}"{% else %}false{% endif %},
           rewardVariantId: {{rewardVariantId}},
           subTotal: {{subtotalCalculated}},
           rewardApplied: {{rewardApplied}},
@@ -78,7 +78,7 @@ Once the variables are added, add the following code to complete the snippet:
 ```
 
 ### Update checkout.liquid
-Include the following code immediately before the head closing tag `</head>` in `checkout.liquid`: this is the best 
+Include the following code immediately before the head closing tag `</head>` in `checkout.liquid`: this is the best
 ```
 {% include 'omneo-checkout-rewards' %}
 ```
@@ -117,7 +117,7 @@ def get_valid_cart_amount(line_items)
       end
     end
   end
-  
+
   cart_amount
 end
 
@@ -146,7 +146,7 @@ def get_applied_loyalty_rewards(line_items)
       end
     end
   end
-  
+
   reward_amount
 end
 
@@ -193,5 +193,16 @@ yarn watch
 ```
 This component requires a Shopify Checkout environment and liquid code to function correctly. Local development should be completed using ThemeKit or by including the local main.js file in a development theme, through port forwarding such as NGROK etc.
 
-
-
+### Hosting and Port forwarding via NGROK
+When making changes to this repo, you can develop locally by:
+1. Cloning the Repo, and running `yarn watch` (this will build, and rebuild on detected changes)
+2. `cd` into the `/dist` directory
+3. Host your local build using either `python -m SimpleHTTPServer` or `http-server` for node (you may need to install http-server globally `npm install http-server -g`)
+4. Navigate to the returned address from the above. This is usually `localhost:8080/shapes-shopify-checkout.js`
+5. If this hasn't worked, you need to make sure the step 3 command was run in `/dist`, and make sure you've run `yarn watch`
+6. install NGROK on your machine
+7. run `ngrok http 8080 -region au` your port may change depending on your http server. The region can also be changed to improve performance.
+8. Note down the `https` address in the console, and navigate to this in a browser. You should be directed to your local directory containing `shapes-shopify-checkout.js`
+9. Navigate to your Shopify theme, and modify `/snippets/omneo-checkout-rewards.liquid`
+10. Modify the script import with your NGROK `https` address ` <script type="text/javascript" src="{YOUR_NGROK_ADDRESS}/shapes-shopify-checkout.js"></script>`
+11. Preview your theme, this theme will now be directed to your local machine to import the `shapes-shopify-checkout.js`
