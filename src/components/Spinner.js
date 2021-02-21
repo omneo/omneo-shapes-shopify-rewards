@@ -1,6 +1,5 @@
 import React from 'react';
 export default class extends React.PureComponent {
-
     constructor() {
         super();
         this.state = {
@@ -8,19 +7,11 @@ export default class extends React.PureComponent {
         };
     }
     componentDidMount(){
-      this.mounted = true;
         setTimeout(()=>{
-          if(this.mounted){
             this.setState({init:true})
-          }
         },16);
 
     }
-
-    componentWillUnmount() {
-      this.mounted = false;
-    }
-
     render() {
         const {init} = this.state;
         const styles = {
