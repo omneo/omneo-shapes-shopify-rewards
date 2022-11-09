@@ -1,5 +1,6 @@
 import React from 'react';
 import {fetch as fetchPolyfill} from 'whatwg-fetch'
+import queryString from 'query-string'
 export default class extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -82,24 +83,50 @@ export default class extends React.PureComponent {
             loading: true
         });
 
-        fetchPolyfill('/cart/add.js',{
+        if (!config.enableDiscounts) {
+            return fetchPolyfill('/cart/add.js',{
+                method:"POST",
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    quantity: 1,
+                    id: rewardVariantId,
+                    properties: {
+                        amount: redeem
+                    }
+                })
+            }).then(function(response){
+                if(response.ok){
+                  location.reload();
+                }
+            });
+        }
+
+        return fetchPolyfill(`${config.pluginUrl}/api/v1/checkout/reward`,{
             method:"POST",
-            credentials: 'include',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                quantity: 1,
-                id: rewardVariantId,
-                properties: {
-                    amount: redeem
-                }
+                amount: redeem,
+                customerId: config.customerId,
+                checkoutId: config.checkoutId
             })
         }).then(function(response){
-            if(response.ok){ location.reload();}
-        });
-    }
+            return response.json()
+        }).then((res) => {
+            const parsed = queryString.parse(location.search);
+            parsed.discount = res.code
+            this.setState({rewardApplied: true, loading: false}, () => {
+                location.search = queryString.stringify(parsed)
+            })
+
+        })
+}
 
     removeRewards(e){
         if(e){e.preventDefault()}
