@@ -109,7 +109,8 @@ export default class extends React.PureComponent {
             method:"POST",
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'x-omneo-signature': config.customerSignature
             },
             body: JSON.stringify({
                 amount: redeem,
@@ -121,7 +122,7 @@ export default class extends React.PureComponent {
         }).then((res) => {
             const parsed = queryString.parse(location.search);
             parsed.discount = res.code
-            this.setState({rewardApplied: true, loading: false}, () => {
+            this.setState({loading: false}, () => {
                 location.search = queryString.stringify(parsed)
             })
 
