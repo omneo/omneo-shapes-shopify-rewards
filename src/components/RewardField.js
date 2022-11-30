@@ -53,6 +53,7 @@ export default class extends React.PureComponent {
     }
 
     onChange(e){
+        const { config, maxBalance } = this.props
         if(e.key && e.key === "Enter"){return}
         e.preventDefault();
 
@@ -63,9 +64,14 @@ export default class extends React.PureComponent {
 
         if(value !== ''){
             if(!this.validate(value)){return;}
-            if(parseFloat(value) > this.getMax()){
+            if(!config.enableDiscounts && parseFloat(value) > this.getMax()){
                 this.setState({redeem: this.getMax()});
                 return;
+            }
+
+            if(config.enableDiscounts && parseFloat(value) > maxBalance) {
+                this.setState({redeem: maxBalance});
+                return
             }
         }
 
@@ -186,7 +192,10 @@ export default class extends React.PureComponent {
     render() {
         const {maxBalance, config, title, toggleBlock} = this.props;
         const {redeem, loading} = this.state;
-        const buttonDisabled = loading || redeem === '' || redeem == 0 || maxBalance <= 0;
+        const buttonDisabled = loading || 
+            (!config.enableDiscounts && redeem === '') || 
+            (!config.enableDiscounts && redeem == 0) || 
+            maxBalance <= 0;
 
         if(config.hideIfInactive && maxBalance <= 0){
             toggleBlock(false)
