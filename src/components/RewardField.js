@@ -1,5 +1,6 @@
 import React from 'react';
 import {fetch as fetchPolyfill} from 'whatwg-fetch'
+import queryString from 'query-string'
 export default class extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -52,6 +53,7 @@ export default class extends React.PureComponent {
     }
 
     onChange(e){
+        const { config, maxBalance } = this.props
         if(e.key && e.key === "Enter"){return}
         e.preventDefault();
 
@@ -62,9 +64,14 @@ export default class extends React.PureComponent {
 
         if(value !== ''){
             if(!this.validate(value)){return;}
-            if(parseFloat(value) > this.getMax()){
+            if(!config.enableDiscounts && parseFloat(value) > this.getMax()){
                 this.setState({redeem: this.getMax()});
                 return;
+            }
+
+            if(config.enableDiscounts && parseFloat(value) > maxBalance) {
+                this.setState({redeem: maxBalance});
+                return
             }
         }
 
@@ -82,24 +89,51 @@ export default class extends React.PureComponent {
             loading: true
         });
 
-        fetchPolyfill('/cart/add.js',{
+        if (!config.enableDiscounts) {
+            return fetchPolyfill('/cart/add.js',{
+                method:"POST",
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    quantity: 1,
+                    id: rewardVariantId,
+                    properties: {
+                        amount: redeem
+                    }
+                })
+            }).then(function(response){
+                if(response.ok){
+                  location.reload();
+                }
+            });
+        }
+
+        return fetchPolyfill(`${config.pluginUrl}/api/v1/checkout/reward`,{
             method:"POST",
-            credentials: 'include',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'x-omneo-signature': config.customerSignature
             },
             body: JSON.stringify({
-                quantity: 1,
-                id: rewardVariantId,
-                properties: {
-                    amount: redeem
-                }
+                amount: redeem,
+                customerId: config.customerId,
+                checkoutId: config.checkoutId
             })
         }).then(function(response){
-            if(response.ok){ location.reload();}
-        });
-    }
+            return response.json()
+        }).then((res) => {
+            const parsed = queryString.parse(location.search);
+            parsed.discount = res.code
+            this.setState({loading: false}, () => {
+                location.search = queryString.stringify(parsed)
+            })
+
+        })
+}
 
     removeRewards(e){
         if(e){e.preventDefault()}
@@ -158,7 +192,10 @@ export default class extends React.PureComponent {
     render() {
         const {maxBalance, config, title, toggleBlock} = this.props;
         const {redeem, loading} = this.state;
-        const buttonDisabled = loading || redeem === '' || redeem == 0 || maxBalance <= 0;
+        const buttonDisabled = loading || 
+            (!config.enableDiscounts && redeem === '') || 
+            (!config.enableDiscounts && redeem == 0) || 
+            maxBalance <= 0;
 
         if(config.hideIfInactive && maxBalance <= 0){
             toggleBlock(false)
