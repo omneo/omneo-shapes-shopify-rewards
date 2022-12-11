@@ -43,6 +43,11 @@ export default class extends React.PureComponent {
         const {subTotal} = config;
         if(subTotal === null){return maxBalance}
         let subTotalValue = parseInt(subTotal) / 100;
+        let totalValue = config.total ? parseInt(config.total) / 100 : 0;
+
+        if (config.enableDiscounts && config.total) {
+            return totalValue < maxBalance ? totalValue : maxBalance
+        }
 
         return subTotalValue < maxBalance ? subTotalValue : maxBalance;
     }
@@ -64,14 +69,9 @@ export default class extends React.PureComponent {
 
         if(value !== ''){
             if(!this.validate(value)){return;}
-            if(!config.enableDiscounts && parseFloat(value) > this.getMax()){
+            if(parseFloat(value) > this.getMax()){
                 this.setState({redeem: this.getMax()});
                 return;
-            }
-
-            if(config.enableDiscounts && parseFloat(value) > maxBalance) {
-                this.setState({redeem: maxBalance});
-                return
             }
         }
 
