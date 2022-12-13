@@ -260,7 +260,7 @@ export default class extends React.PureComponent {
                                 />
                             </button>
                         </div>
-                        <small style={{marginTop: 10, display: 'block', lineHeight:1}}>Rewards are not redeemable against gift cards or shipping</small>
+                        <small style={{marginTop: 10, display: 'block', lineHeight:1}}>{config.redeemText || "Rewards are not redeemable against gift cards or shipping"}</small>
                     </div>
                 </form>
             </div>
