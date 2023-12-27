@@ -71,16 +71,43 @@ export default class extends React.PureComponent {
 		}
 	}
 
+	getSpendLimit(data){ 
+		const { combined_balance_dollars = null } = data;
+		const { config } = this.props;
+		const { spendBrackets = [], total } = config;
+		const transactionTotal = (total / 100).toFixed(2)
+		let maxValue;
+		if (spendBrackets.length) { 
+            let maxValueSet = spendBrackets.filter(bracket => {
+                if (transactionTotal >= bracket.min && transactionTotal < bracket.max) {
+                    return bracket
+                }
+                if (!bracket.max && transactionTotal >= bracket.min) {
+                    return bracket
+                }
+                return false
+            }).map(item => {
+                return {
+                    reward: item.max && item.reward < combined_balance_dollars ? item.reward : Math.max(combined_balance_dollars, item.reward)
+                }
+            })
+            if (!maxValueSet.length) return parseFloat(0)
+            maxValue = maxValueSet[0].reward
+            return parseFloat(maxValue)
+        }
+	}
+
 	render() {
 		const {init, data, error} = this.state;
+		const spendLimitBalance = data && this.getSpendLimit(data)
 		const {
 			hideIfInactive,
+			useSpendBrackets = false,
 			supportEmail,
 			title = 'Loyalty rewards available:',
 			errorMessage = "There was an issue retrieving your reward balance. Please try again shortly or get in touch with customer support.",
 			loadingMessage = "Just a moment as we set up your account",
 		} = this.props.config;
-
 		if(!init){
 			return(
 				<RewardPlaceholder
@@ -110,7 +137,7 @@ export default class extends React.PureComponent {
 		}
 		return(
 			<RewardField
-				maxBalance={data.combined_balance_dollars || 0}
+				maxBalance={useSpendBrackets ? spendLimitBalance : data.combined_balance_dollars || 0}
 				config={this.props.config}
 				title={title}
 				toggleBlock={this.toggleBlock.bind(this)}
