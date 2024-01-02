@@ -87,6 +87,12 @@ export default class extends React.PureComponent {
                 }
                 return false
             }).map(item => {
+				if (item.type === 'multiplier') {
+					const { multiplier = 1 } = item;
+					return {
+						reward: (transactionTotal / multiplier) > combined_balance_dollars ? combined_balance_dollars : (transactionTotal / multiplier)
+					}
+				}
                 return {
                     reward: item.max && item.reward < combined_balance_dollars ? item.reward : Math.max(combined_balance_dollars, item.reward)
                 }
